@@ -1,8 +1,36 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const moment = require('moment')
-require('dotenv').config();
 const knex = require('../database/index');
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/');
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().toISOString() +"_"+ file.originalname);
+    }
+});
+
+
+// filtar tipo do arquivo
+// const fileFilter = (req, file, cb) => {
+//     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+//         cb(null, true);
+//     } else {
+//         cb(null, false);
+//     }
+// }
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    },
+});
+
 
 router.get('/', (req,res, next) => {
     const produtos = knex('produtos')
@@ -32,17 +60,17 @@ router.get('/', (req,res, next) => {
         })
 });
 
-router.post('/', (req,res, next) => {
+router.post('/', upload.single('imagem'), (req,res, next) => {
 
     const created_at = moment().format(); 
     const updated_at = moment().format(); 
+    const imagem = req.file.path
 
     const {
         codigo,
         nome,
         descricao,
         descricao_curta,
-        imagem,
         valor,
         ativo,
         categoria_id
@@ -83,7 +111,7 @@ router.post('/', (req,res, next) => {
                         codigo: req.body.codigo,
                         descricao: req.body.descricao,
                         descricao_curta: req.body.descricao_curta,
-                        imagem : req.body.imagem,
+                        imagem : imagem,
                         valor: req.body.valor,
                         ativo : req.body.ativo,
                         categoria_id: req.body.categoria_id,
@@ -131,10 +159,11 @@ router.get('/:idProduto', (req,res, next) => {
         })
 });
 
-router.put('/:idProduto', (req,res, next) => {
+router.put('/:idProduto',upload.single('imagem'), (req,res, next) => {
 
     const { idProduto }  = req.params;
     const updated_at = moment().format(); 
+    const imagem = req.file.path
         
         if(!idProduto) {
             return res.status(422).send({"mensagem": "O ID informado é inválido."})
@@ -144,7 +173,6 @@ router.put('/:idProduto', (req,res, next) => {
             nome,
             descricao,
             descricao_curta,
-            imagem,
             valor,
             ativo,
             categoria_id
@@ -186,7 +214,7 @@ router.put('/:idProduto', (req,res, next) => {
                     codigo: req.body.codigo,
                     descricao: req.body.descricao,
                     descricao_curta: req.body.descricao_curta,
-                    imagem : req.body.imagem,
+                    imagem : imagem,
                     valor: req.body.valor,
                     ativo : req.body.ativo,
                     categoria_id: req.body.categoria_id,
