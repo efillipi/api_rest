@@ -4,7 +4,9 @@ const router = express.Router();
 const moment = require('moment')
 const knex = require('../database/index');
 const multer = require('multer');
-
+const { post, put } = require('./usuarios');
+const { del, on } = require('../database/index');
+// -----------------------------
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/');
@@ -13,7 +15,7 @@ const storage = multer.diskStorage({
         cb(null, new Date().toISOString() +"_"+ file.originalname);
     }
 });
-
+// -----------------------------
 
 // filtar tipo do arquivo
 // const fileFilter = (req, file, cb) => {
@@ -23,15 +25,14 @@ const storage = multer.diskStorage({
 //         cb(null, false);
 //     }
 // }
-
+// -----------------------------
 const upload = multer({
     storage: storage,
     limits: {
         fileSize: 1024 * 1024 * 5
     },
 });
-
-
+// -----------------------------
 router.get('/', (req,res, next) => {
     const produtos = knex('produtos')
         .select('*')
@@ -59,7 +60,7 @@ router.get('/', (req,res, next) => {
             return res.status(500).send({"mensagem": "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
         })
 });
-
+// -----------------------------
 router.post('/', upload.single('imagem'), (req,res, next) => {
 
     const created_at = moment().format(); 
@@ -130,7 +131,7 @@ router.post('/', upload.single('imagem'), (req,res, next) => {
         return res.status(500).send({"mensagem": "Erro no servidor ao cadastrar o produto, informe o administrador do sistema. " + err})
     })
 });
-
+// -----------------------------
 router.get('/:idProduto', (req,res, next) => {
     const { idProduto }  = req.params;
         
@@ -158,7 +159,7 @@ router.get('/:idProduto', (req,res, next) => {
             return res.status(500).send({"mensagem": "Erro no servidor ao consultar o produto, informe o administrador do sistema. " + err})
         })
 });
-
+// -----------------------------
 router.put('/:idProduto',upload.single('imagem'), (req,res, next) => {
 
     const { idProduto }  = req.params;
@@ -232,7 +233,7 @@ router.put('/:idProduto',upload.single('imagem'), (req,res, next) => {
             return res.status(500).send({"mensagem": "Erro no servidor ao editar o produto, informe o administrador do sistema. " + err})
         })
 });
-
+// -----------------------------
 router.delete('/:idProduto', (req,res, next) => {
     const { idProduto }  = req.params;
         
@@ -245,7 +246,7 @@ router.delete('/:idProduto', (req,res, next) => {
         } = req.body;
 
         if(
-           !idProduto
+           !ativo
         ) {
             return res.status(422).send({"mensagem": "Não foi possível Excluir este produto. Informações incompletas. Tente novamente."});
         }
@@ -272,5 +273,5 @@ router.delete('/:idProduto', (req,res, next) => {
             return res.status(500).send({"mensagem": "Erro no servidor ao editar o produto, informe o administrador do sistema. " + err})
         })
 });
-
+// -----------------------------
 module.exports = router;

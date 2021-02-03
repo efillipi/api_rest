@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const moment = require('moment')
 const knex = require('../database/index');
-
+// -----------------------------
 router.get('/', (req,res, next) => {
 
     const pedidos = knex('pedidos')
@@ -33,7 +33,7 @@ router.get('/', (req,res, next) => {
             return res.status(500).send({"mensagem": "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
         })
 });
-
+// -----------------------------
 router.post('/', (req,res, next) => {
     try {
         const vazio = Boolean;
@@ -96,9 +96,7 @@ router.post('/', (req,res, next) => {
                     observacao : observacao
                 }
             }));
-        
-
-        
+                
         const pedido_produto = knex('pedido_produtos').insert(pedido_produtos)
         .then(pedido_produto => {
         if(pedido_produto.length == 0) 
@@ -125,7 +123,7 @@ router.post('/', (req,res, next) => {
         return res.status(500).send({"mensagem": "Erro no servidor ao cadastrar o pedido, informe o administrador do sistema. " + error})
     }
 });
-
+// -----------------------------
 router.get('/:idPedido', (req,res, next) => {
     const idPedido =req.params.idPedido;
     const pedido = knex('pedidos')
@@ -158,7 +156,7 @@ router.get('/:idPedido', (req,res, next) => {
             return res.status(500).send({"mensagem": "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
         })
 });
-
+// -----------------------------
 router.put('/:idPedido', (req,res, next) => {
 
     const { idPedido }  = req.params;
@@ -248,17 +246,12 @@ router.put('/:idPedido', (req,res, next) => {
             return res.status(500).send({"mensagem": "Erro no servidor ao editar o pedido, informe o administrador do sistema. " + err})
         })
 });
-
+// -----------------------------
 router.delete('/:idPedido', (req,res, next) => {
     const { idPedido }  = req.params;
         
         if(!idPedido) {
             return res.status(422).send({"mensagem": "O ID informado é inválido."})
-        }
-        if(
-           !idPedido
-        ) {
-            return res.status(422).send({"mensagem": "Não foi possível Excluir este pedido. Informações incompletas. Tente novamente."});
         }
         knex('pedidos')
         .where('id', idPedido)
@@ -280,5 +273,5 @@ router.delete('/:idPedido', (req,res, next) => {
             return res.status(500).send({"mensagem": "Erro no servidor ao editar o pedido, informe o administrador do sistema. " + err})
         })
 });
-
+// -----------------------------
 module.exports = router;
