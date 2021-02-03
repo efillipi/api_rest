@@ -16,9 +16,7 @@ router.get('/', (req,res, next) => {
                     quantidade: produtos.length,
                     produtos: produtos.map(prod => {
                         return {
-                            idProduto: prod.id,
-                            nome: prod.nome,
-                            valor: prod.valor,
+                            prod,
                             request: {
                                 tipo: 'GET',
                                 descricao: 'Retorna os detalhes de um produto específico',
@@ -80,8 +78,17 @@ router.post('/', (req,res, next) => {
             const response = {
                 mensagem: 'Produto Inserido com Sucesso',
                 produtoCriado: {
-                        idProduto: produto.id,
+                        idProduto: produto,
                         nome: req.body.nome,
+                        codigo: req.body.codigo,
+                        descricao: req.body.descricao,
+                        descricao_curta: req.body.descricao_curta,
+                        imagem : req.body.imagem,
+                        valor: req.body.valor,
+                        ativo : req.body.ativo,
+                        categoria_id: req.body.categoria_id,
+                        created_at: req.body.created_at,
+                        updated_at: req.body.updated_at,
                         request: {
                             tipo: 'GET',
                             descricao: 'Retorna todos os produtos',
@@ -132,7 +139,6 @@ router.put('/:idProduto', (req,res, next) => {
         if(!idProduto) {
             return res.status(422).send({"mensagem": "O ID informado é inválido."})
         }
-
         const {
             codigo,
             nome,
@@ -140,6 +146,7 @@ router.put('/:idProduto', (req,res, next) => {
             descricao_curta,
             imagem,
             valor,
+            ativo,
             categoria_id
         } = req.body;
 
@@ -149,6 +156,7 @@ router.put('/:idProduto', (req,res, next) => {
             !descricao || 
             !descricao_curta || 
             !valor || 
+            !ativo || 
             !categoria_id
         ) {
             return res.status(422).send({"mensagem": "Não foi possível editar este produto. Informações incompletas. Tente novamente."});
@@ -164,26 +172,33 @@ router.put('/:idProduto', (req,res, next) => {
             descricao_curta,
             imagem,
             valor,
+            ativo,
             categoria_id,
             updated_at
-            
         })
         .then(produto => {
             if(!produto || produto.length == 0) 
                 return res.status(404).send({"mensagem": "Não foi encontrado nenhum produto."});
             const response = {
                 produtos: {
-                        idProduto: idProduto,
-                        nome: nome,
-                        valor: valor,
-                        request: {
-                            tipo: 'GET',
-                            descricao: 'Retorna os detalhes de um produto específico',
-                            url: process.env.URL_API + 'produtos/'+idProduto                    
-                        }
+                    idProduto: idProduto,
+                    nome: req.body.nome,
+                    codigo: req.body.codigo,
+                    descricao: req.body.descricao,
+                    descricao_curta: req.body.descricao_curta,
+                    imagem : req.body.imagem,
+                    valor: req.body.valor,
+                    ativo : req.body.ativo,
+                    categoria_id: req.body.categoria_id,
+                    updated_at: updated_at,
+                    request: {
+                        tipo: 'GET',
+                        descricao: 'Retorna os detalhes de um produto específico',
+                        url: process.env.URL_API + 'produtos/'+idProduto                    
                     }
                 }
-                return res.status(202).send(response);
+            }
+            return res.status(202).send(response);
         })
         .catch(err => {
             return res.status(500).send({"mensagem": "Erro no servidor ao editar o produto, informe o administrador do sistema. " + err})
