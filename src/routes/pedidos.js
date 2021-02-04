@@ -9,7 +9,7 @@ router.get('/', (req,res, next) => {
         .select('*')
         .then(pedidos => {
             if(pedidos.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum pedido."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum pedido."});
             
                 const response = {
                     quantidade: pedidos.length,
@@ -30,7 +30,7 @@ router.get('/', (req,res, next) => {
             return res.status(200).send(response);
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
         })
 });
 // -----------------------------
@@ -43,7 +43,7 @@ router.post('/', (req,res, next) => {
         const { produtos }  = req.body;
 
         if(!produtos) {
-            return res.status(422).send({"mensagem": "O produto informado é inválido."})
+            return res.status(422).send({mensagem: "O produto informado é inválido."})
         }
         produtos.map((item => {
             if(
@@ -56,7 +56,7 @@ router.post('/', (req,res, next) => {
         }));
 
         if(vazio === false) {
-            return res.status(422).send({"mensagem": "O produto informado é inválido."})
+            return res.status(422).send({mensagem: "O produto informado é inválido."})
         }
 
         const {
@@ -69,7 +69,7 @@ router.post('/', (req,res, next) => {
             !data||
             !valor_total
         ) {
-            return res.status(422).send({"mensagem": "Não foi possível vincular o produto. Tente novamente."});
+            return res.status(422).send({mensagem: "Não foi possível vincular o produto. Tente novamente."});
         }
 
         const pedido = knex('pedidos').insert({
@@ -82,7 +82,7 @@ router.post('/', (req,res, next) => {
         })
         .then(pedido => {
             if(pedido.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum produto."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
                 
 
         const pedido_produtos = produtos
@@ -100,7 +100,7 @@ router.post('/', (req,res, next) => {
         const pedido_produto = knex('pedido_produtos').insert(pedido_produtos)
         .then(pedido_produto => {
         if(pedido_produto.length == 0) 
-            return res.status(404).send({"mensagem": "Não foi encontrado nenhum produto."});
+            return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
             
         const response = {
             pedido_id: pedido,
@@ -120,7 +120,7 @@ router.post('/', (req,res, next) => {
     }) 
             
     } catch (error) {
-        return res.status(500).send({"mensagem": "Erro no servidor ao cadastrar o pedido, informe o administrador do sistema. " + error})
+        return res.status(500).send({mensagem: "Erro no servidor ao cadastrar o pedido, informe o administrador do sistema. " + error})
     }
 });
 // -----------------------------
@@ -131,7 +131,7 @@ router.get('/:idPedido', (req,res, next) => {
     .select('*')
     .then(pedido => {
         if(pedido.length == 0) 
-            return res.status(404).send({"mensagem": "Não foi encontrado nenhum pedido."});
+            return res.status(404).send({mensagem: "Não foi encontrado nenhum pedido."});
         const pedido_produtos = knex('pedido_produtos')
             .join('pedidos', 'pedidos.id', '=', 'pedido_produtos.pedido_id')
             .join('produtos', 'produtos.id', '=', 'pedido_produtos.produto_id')
@@ -143,7 +143,7 @@ router.get('/:idPedido', (req,res, next) => {
             )
             .then(pedido_produtos => {
                 if(pedido_produtos.length == 0) 
-                    return res.status(404).send({"mensagem": "Não foi encontrado nenhum pedido."});
+                    return res.status(404).send({mensagem: "Não foi encontrado nenhum pedido."});
                 const response = {
                     pedido,
                     quantidadeProdutos: pedido_produtos.length,
@@ -153,7 +153,7 @@ router.get('/:idPedido', (req,res, next) => {
             })
     })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
         })
 });
 // -----------------------------
@@ -167,7 +167,7 @@ router.put('/:idPedido', (req,res, next) => {
     const { produtos }  = req.body;
 
     if(!produtos) {
-        return res.status(422).send({"mensagem": "O produto informado é inválido."})
+        return res.status(422).send({mensagem: "O produto informado é inválido."})
     }
     produtos.map((item => {
         if(
@@ -176,7 +176,7 @@ router.put('/:idPedido', (req,res, next) => {
             !item.valor
             ) {vazio = false;}
     }));
-    if(vazio === false) {return res.status(422).send({"mensagem": "O produto informado é inválido."})}
+    if(vazio === false) {return res.status(422).send({mensagem: "O produto informado é inválido."})}
 
     const {
         observacao,
@@ -187,7 +187,7 @@ router.put('/:idPedido', (req,res, next) => {
     if(
         !data||
         !valor_total
-    ) {return res.status(422).send({"mensagem": "Não foi possível vincular o produto. Tente novamente."});}
+    ) {return res.status(422).send({mensagem: "Não foi possível vincular o produto. Tente novamente."});}
 
         const pedido = knex('pedidos')
         .where('id', idPedido)
@@ -200,13 +200,13 @@ router.put('/:idPedido', (req,res, next) => {
         })
         .then(pedido => {
             if(!pedido || pedido.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum pedido."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum pedido."});
             const pedido_produtos_del = knex('pedido_produtos')
             .where('pedido_id', idPedido)
             .del()
             .then(pedido_produtos_del => {
                 if(!pedido_produtos_del || pedido_produtos_del.length == 0) 
-                    return res.status(404).send({"mensagem": "Não foi encontrado nenhum pedido."});
+                    return res.status(404).send({mensagem: "Não foi encontrado nenhum pedido."});
             const pedido_produtos = produtos
             .map((item => {
                 return {
@@ -221,7 +221,7 @@ router.put('/:idPedido', (req,res, next) => {
             const pedido_produto = knex('pedido_produtos').insert(pedido_produtos)
             .then(pedido_produto => {
             if(pedido_produto.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum produto."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
                 
             const response = {
                 mensagem: "Pedido Alterado com exito.",
@@ -243,7 +243,7 @@ router.put('/:idPedido', (req,res, next) => {
             })
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao editar o pedido, informe o administrador do sistema. " + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao editar o pedido, informe o administrador do sistema. " + err})
         })
 });
 // -----------------------------
@@ -251,14 +251,14 @@ router.delete('/:idPedido', (req,res, next) => {
     const { idPedido }  = req.params;
         
         if(!idPedido) {
-            return res.status(422).send({"mensagem": "O ID informado é inválido."})
+            return res.status(422).send({mensagem: "O ID informado é inválido."})
         }
         knex('pedidos')
         .where('id', idPedido)
         .del()
         .then(pedido => {
             if(!pedido || pedido.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum pedido."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum pedido."});
             const response = {
                 mensagem: "Excluido com sucesso",
                 request: {
@@ -270,7 +270,7 @@ router.delete('/:idPedido', (req,res, next) => {
             return res.status(200).send(response);
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao editar o pedido, informe o administrador do sistema. " + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao editar o pedido, informe o administrador do sistema. " + err})
         })
 });
 // -----------------------------

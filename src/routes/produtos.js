@@ -4,8 +4,8 @@ const router = express.Router();
 const moment = require('moment')
 const knex = require('../database/index');
 const multer = require('multer');
-const { post, put } = require('./usuarios');
-const { del, on } = require('../database/index');
+const login = require('../middleware/login');
+
 // -----------------------------
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -33,13 +33,13 @@ const upload = multer({
     },
 });
 // -----------------------------
-router.get('/', (req,res, next) => {
+router.get('/', login.optional,(req,res, next) => {
     const produtos = knex('produtos')
         .select('*')
         .where('ativo','ativo')
         .then(produtos => {
             if(produtos.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum produto."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
             
                 const response = {
                     quantidade: produtos.length,
@@ -57,12 +57,11 @@ router.get('/', (req,res, next) => {
             return res.status(200).send(response);
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
         })
 });
 // -----------------------------
-router.post('/', upload.single('imagem'), (req,res, next) => {
-
+router.post('/',login.required,upload.single('imagem'), (req,res, next) => {
     const created_at = moment().format(); 
     const updated_at = moment().format(); 
     const imagem = req.file.path
@@ -85,7 +84,7 @@ router.post('/', upload.single('imagem'), (req,res, next) => {
         !ativo || 
         !categoria_id
     ) {
-        return res.status(422).send({"mensagem": "Não foi possível cadastrar este produto. Informações incompletas. Tente novamente."});
+        return res.status(422).send({mensagem: "Não foi possível cadastrar este produto. Informações incompletas. Tente novamente."});
     }
 
     const produto = knex('produtos').insert({
@@ -102,7 +101,7 @@ router.post('/', upload.single('imagem'), (req,res, next) => {
     })
     .then(produto => {
         if(!produto || produto.length == 0) 
-            return res.status(400).send({"mensagem": "Não foi possível cadastrar este produto. Tente novamente."});
+            return res.status(400).send({mensagem: "Não foi possível cadastrar este produto. Tente novamente."});
 
             const response = {
                 mensagem: 'Produto Inserido com Sucesso',
@@ -128,15 +127,15 @@ router.post('/', upload.single('imagem'), (req,res, next) => {
         return res.status(201).send(response);
     })
     .catch(err => {
-        return res.status(500).send({"mensagem": "Erro no servidor ao cadastrar o produto, informe o administrador do sistema. " + err})
+        return res.status(500).send({mensagem: "Erro no servidor ao cadastrar o produto, informe o administrador do sistema. " + err})
     })
 });
 // -----------------------------
-router.get('/:idProduto', (req,res, next) => {
+router.get('/:idProduto', login.optional,(req,res, next) => {
     const { idProduto }  = req.params;
         
         if(!idProduto) {
-            return res.status(422).send({"mensagem": "O ID informado é inválido."})
+            return res.status(422).send({mensagem: "O ID informado é inválido."})
         }
         const produto = knex('produtos')
         .select('*')
@@ -144,7 +143,7 @@ router.get('/:idProduto', (req,res, next) => {
         .where('ativo','ativo')
         .then(produto => {
             if(!produto || produto.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum produto."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
             const response = {
                 produto,
                 request: {
@@ -156,18 +155,16 @@ router.get('/:idProduto', (req,res, next) => {
             return res.status(200).send(response);
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao consultar o produto, informe o administrador do sistema. " + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao consultar o produto, informe o administrador do sistema. " + err})
         })
 });
 // -----------------------------
-router.put('/:idProduto',upload.single('imagem'), (req,res, next) => {
+router.put('/:idProduto', login.required, (req,res, next) => {
 
     const { idProduto }  = req.params;
-    const updated_at = moment().format(); 
-    const imagem = req.file.path
-        
+    const updated_at = moment().format();     
         if(!idProduto) {
-            return res.status(422).send({"mensagem": "O ID informado é inválido."})
+            return res.status(422).send({mensagem: "O ID informado é inválido."})
         }
         const {
             codigo,
@@ -188,18 +185,16 @@ router.put('/:idProduto',upload.single('imagem'), (req,res, next) => {
             !ativo || 
             !categoria_id
         ) {
-            return res.status(422).send({"mensagem": "Não foi possível editar este produto. Informações incompletas. Tente novamente."});
+            return res.status(422).send({mensagem: "Não foi possível editar este produto. Informações incompletas. Tente novamente."});
         }
 
         const produto = knex('produtos')
         .where('id', idProduto)
-        .where('ativo','ativo')
         .update({
             codigo,
             nome,
             descricao,
             descricao_curta,
-            imagem,
             valor,
             ativo,
             categoria_id,
@@ -207,7 +202,7 @@ router.put('/:idProduto',upload.single('imagem'), (req,res, next) => {
         })
         .then(produto => {
             if(!produto || produto.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum produto."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
             const response = {
                 produtos: {
                     idProduto: idProduto,
@@ -215,7 +210,6 @@ router.put('/:idProduto',upload.single('imagem'), (req,res, next) => {
                     codigo: req.body.codigo,
                     descricao: req.body.descricao,
                     descricao_curta: req.body.descricao_curta,
-                    imagem : imagem,
                     valor: req.body.valor,
                     ativo : req.body.ativo,
                     categoria_id: req.body.categoria_id,
@@ -230,32 +224,22 @@ router.put('/:idProduto',upload.single('imagem'), (req,res, next) => {
             return res.status(202).send(response);
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao editar o produto, informe o administrador do sistema. " + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao editar o produto, informe o administrador do sistema. " + err})
         })
 });
 // -----------------------------
-router.delete('/:idProduto', (req,res, next) => {
+router.delete('/:idProduto', login.required,(req,res, next) => {
     const { idProduto }  = req.params;
         
         if(!idProduto) {
-            return res.status(422).send({"mensagem": "O ID informado é inválido."})
+            return res.status(422).send({mensagem: "O ID informado é inválido."})
         }
-
-        const {
-            ativo,
-        } = req.body;
-
-        if(
-           !ativo
-        ) {
-            return res.status(422).send({"mensagem": "Não foi possível Excluir este produto. Informações incompletas. Tente novamente."});
-        }
-        knex('produtos').where('id', idProduto).update({
-            ativo, 
-        })
+        const produto = knex('produtos')
+        .where('id', idProduto)
+        .del()
         .then(produto => {
             if(!produto || produto.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum produto."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
             
             const response = {
                 mensagem: "Excluido com sucesso",
@@ -270,7 +254,7 @@ router.delete('/:idProduto', (req,res, next) => {
             return res.status(200).send(response);
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao editar o produto, informe o administrador do sistema. " + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao editar o produto, informe o administrador do sistema. " + err})
         })
 });
 // -----------------------------

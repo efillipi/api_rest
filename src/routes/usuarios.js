@@ -10,7 +10,7 @@ router.get('/', (req,res, next) => {
         .select('*')
         .then(usuarios => {
             if(usuarios.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum produto."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
             
                 const response = {
                     quantidade: usuarios.length,
@@ -34,7 +34,7 @@ router.get('/', (req,res, next) => {
             return res.status(200).send(response);
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
         })
 });
 // -------------------------------------------------
@@ -56,7 +56,7 @@ router.post('/', (req,res, next) => {
         !senha||
         !nivel_acesso
     ) {
-        return res.status(422).send({"mensagem": "Não foi possível cadastrar este Usuario. Informações incompletas. Tente novamente."});
+        return res.status(422).send({mensagem: "Não foi possível cadastrar este Usuario. Informações incompletas. Tente novamente."});
     }
     const usuarios = knex('users')
         .where('email',email)
@@ -64,12 +64,12 @@ router.post('/', (req,res, next) => {
             console.log(usuarios.length)
             if(usuarios.length >0)
             {
-                return res.status(409).send({"mensagem": "Usuario ja cadastrado."});
+                return res.status(409).send({mensagem: "Usuario ja cadastrado."});
             }
             else{
                 bcrypt.hash(req.body.senha, 5,(errbcrypt,hash)=>{
                     if(errbcrypt) {
-                        return res.status(500).send({"mensagem": "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + errbcrypt})
+                        return res.status(500).send({mensagem: "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + errbcrypt})
                     }
                     const create_user = knex('users').insert({
                         nome,
@@ -82,7 +82,7 @@ router.post('/', (req,res, next) => {
                     })
                     .then(create_user => {
                         if(!create_user || create_user.length == 0) 
-                            return res.status(400).send({"mensagem": "Não foi possível cadastrar este create_user. Tente novamente."});
+                            return res.status(400).send({mensagem: "Não foi possível cadastrar este create_user. Tente novamente."});
                 
                             const response = {
                                 mensagem: 'Produto Inserido com Sucesso',
@@ -104,13 +104,13 @@ router.post('/', (req,res, next) => {
                         return res.status(201).send(response);
                     })
                     .catch(err => {
-                        return res.status(500).send({"mensagem": "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + err})
+                        return res.status(500).send({mensagem: "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + err})
                     })
                 })
             }
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + err})
         })
         
 });
@@ -119,14 +119,14 @@ router.get('/:idUser', (req,res, next) => {
     const { idUser }  = req.params;
         
         if(!idUser) {
-            return res.status(422).send({"mensagem": "O ID informado é inválido."})
+            return res.status(422).send({mensagem: "O ID informado é inválido."})
         }
         const usuario = knex('users')
         .select('*')
         .where('id', idUser)
         .then(usuario => {
             if(!usuario || usuario.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum usuario."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum usuario."});
                 const response = {
                     mensagem: 'Produto alterado com Sucesso',
                     usuario: {
@@ -147,7 +147,7 @@ router.get('/:idUser', (req,res, next) => {
             return res.status(200).send(response);
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao consultar o produto, informe o administrador do sistema. " + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao consultar o produto, informe o administrador do sistema. " + err})
         })
 });
 // -------------------------------------------------
@@ -169,9 +169,8 @@ router.put('/:idUser', (req,res, next) => {
         !senha||
         !nivel_acesso
     ) {
-        return res.status(422).send({"mensagem": "Não foi possível cadastrar este Usuario. Informações incompletas. Tente novamente."});
+        return res.status(422).send({mensagem: "Não foi possível cadastrar este Usuario. Informações incompletas. Tente novamente."});
     }
-
 
     const usuarios = knex('users')
         .where('email',email)
@@ -179,12 +178,12 @@ router.put('/:idUser', (req,res, next) => {
             console.log(usuarios.length)
             if(usuarios.length >0)
             {
-                return res.status(409).send({"mensagem": "Usuario ja cadastrado."});
+                return res.status(409).send({mensagem: "Usuario ja cadastrado."});
             }
             else{
                 bcrypt.hash(req.body.senha, 5,(errbcrypt,hash)=>{
                     if(errbcrypt) {
-                        return res.status(500).send({"mensagem": "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + errbcrypt})
+                        return res.status(500).send({mensagem: "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + errbcrypt})
                     }
                     const create_user = knex('users')
                     .where('id', idUser)
@@ -198,7 +197,7 @@ router.put('/:idUser', (req,res, next) => {
                     })
                     .then(create_user => {
                         if(!create_user || create_user.length == 0) 
-                            return res.status(400).send({"mensagem": "Não foi possível cadastrar este create_user. Tente novamente."});
+                            return res.status(400).send({mensagem: "Não foi possível cadastrar este create_user. Tente novamente."});
                 
                             const response = {
                                 mensagem: 'Produto Aletado com Sucesso',
@@ -219,7 +218,7 @@ router.put('/:idUser', (req,res, next) => {
                         return res.status(201).send(response);
                     })
                     .catch(err => {
-                        return res.status(500).send({"mensagem": "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + err})
+                        return res.status(500).send({mensagem: "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + err})
                     })
                 })
 
@@ -237,7 +236,7 @@ router.put('/:idUser', (req,res, next) => {
             }
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + err})
         })
         
 });
@@ -246,14 +245,14 @@ router.delete('/:idUser', (req,res, next) => {
     const { idUser }  = req.params;
         
         if(!idUser) {
-            return res.status(422).send({"mensagem": "O ID informado é inválido."})
+            return res.status(422).send({mensagem: "O ID informado é inválido."})
         }
         knex('users')
         .where('id', idUser)
         .del()
         .then(pedido => {
             if(!pedido || pedido.length == 0) 
-                return res.status(404).send({"mensagem": "Não foi encontrado nenhum pedido."});
+                return res.status(404).send({mensagem: "Não foi encontrado nenhum pedido."});
             const response = {
                 mensagem: "Excluido com sucesso",
                 request: {
@@ -265,7 +264,7 @@ router.delete('/:idUser', (req,res, next) => {
             return res.status(200).send(response);
         })
         .catch(err => {
-            return res.status(500).send({"mensagem": "Erro no servidor ao editar o pedido, informe o administrador do sistema. " + err})
+            return res.status(500).send({mensagem: "Erro no servidor ao editar o pedido, informe o administrador do sistema. " + err})
         })
 });
 // -------------------------------------------------
