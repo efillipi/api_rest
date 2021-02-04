@@ -1,6 +1,6 @@
 const knex = require('../database/index');
 const bcrypt = require('bcrypt');
-const jwt =require('jsonwebtoken')
+
 
 module.exports = {
     // -----------------------------
@@ -139,5 +139,3 @@ module.exports = {
 
     },
 }
-
-
