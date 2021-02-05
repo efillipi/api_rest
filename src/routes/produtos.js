@@ -4,9 +4,12 @@ const router = express.Router();
 const multer = require('../utils/multer');
 const login = require('../middleware/login');
 const ProdutosController = require('../controllers/ProdutosController')
+const path = require('path');
+
 
 router.get('/', ProdutosController.getall)
-router.post('/',  login.required, multer.upload.single('imagem'),ProdutosController.create)
+
+router.post('/',  login.required,multer.upload.single('imagem'),ProdutosController.create)
 router.put('/:idProduto', login.required,ProdutosController.put)
 router.get('/:idProduto', login.optional,ProdutosController.byid)
 router.delete('/:idProduto', login.required,ProdutosController.delete)

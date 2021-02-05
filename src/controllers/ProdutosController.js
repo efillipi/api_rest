@@ -2,6 +2,7 @@ const moment = require('moment')
 const knex = require('../database/index');
 
 
+
 module.exports = {
     // -----------------------------
     async getall(req,res, next) {
@@ -33,10 +34,9 @@ module.exports = {
     },
     // -----------------------------
     async create(req,res, next) {
+
         const created_at = moment().format(); 
         const updated_at = moment().format(); 
-        const imagem = req.file.path
-
         const {
             codigo,
             nome,
@@ -63,7 +63,7 @@ module.exports = {
             nome,
             descricao,
             descricao_curta,
-            imagem,
+            imagem :req.file.path,
             valor,
             ativo,
             categoria_id,
@@ -82,7 +82,7 @@ module.exports = {
                             codigo: req.body.codigo,
                             descricao: req.body.descricao,
                             descricao_curta: req.body.descricao_curta,
-                            imagem : imagem,
+                            imagem : req.file.path,
                             valor: req.body.valor,
                             ativo : req.body.ativo,
                             categoria_id: req.body.categoria_id,
