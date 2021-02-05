@@ -1,0 +1,12 @@
+APP_PORT=none
+
+DB_CLIENT=none
+DB_PORT=none
+DB_HOST=none
+DB_USER=none
+DB_PASSWORD=none
+DB_DATABASE=none
+
+JWT_KEY=none
+
+URL_API=http://localhost:3000/

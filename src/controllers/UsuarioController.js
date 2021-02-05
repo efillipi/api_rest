@@ -9,7 +9,7 @@ module.exports = {
             .select('*')
             .then(usuarios => {
                 if(usuarios.length == 0) 
-                    return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
+                    return res.status(404).send({mensagem: "Não foi encontrado nenhum usuario."});
                 
                     const response = {
                         quantidade: usuarios.length,
@@ -24,7 +24,7 @@ module.exports = {
                                 updated_at: usuario.updated_at,
                                 request: {
                                     tipo: 'GET',
-                                    descricao: 'Retorna os detalhes de um produto específico',
+                                    descricao: 'Retorna os detalhes de um usuario específico',
                                     url: process.env.URL_API + 'usuarios/' + usuario.id
                                 }
                             }
@@ -33,7 +33,7 @@ module.exports = {
                 return res.status(200).send(response);
             })
             .catch(err => {
-                return res.status(500).send({mensagem: "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
+                return res.status(500).send({mensagem: "Erro no servidor ao consultar os usuarios, informe o administrador do sistema." + err})
             })
     },
     // -------------------------------------------------
@@ -81,11 +81,11 @@ module.exports = {
                         })
                         .then(create_user => {
                             if(!create_user || create_user.length == 0) 
-                                return res.status(400).send({mensagem: "Não foi possível cadastrar este create_user. Tente novamente."});
+                                return res.status(400).send({mensagem: "Não foi possível cadastrar este usuario. Tente novamente."});
                     
                                 const response = {
-                                    mensagem: 'Produto Inserido com Sucesso',
-                                    produtoCriado: {
+                                    mensagem: 'usuario Inserido com Sucesso',
+                                    usuarioCriado: {
                                             idUser: create_user,
                                             nome:req.body.nome,
                                             email:req.body.email,
@@ -145,7 +145,7 @@ module.exports = {
                 return res.status(200).send(response);
             })
             .catch(err => {
-                return res.status(500).send({mensagem: "Erro no servidor ao consultar o produto, informe o administrador do sistema. " + err})
+                return res.status(500).send({mensagem: "Erro no servidor ao consultar o usuario, informe o administrador do sistema. " + err})
             })
     },
     
@@ -162,7 +162,7 @@ module.exports = {
             !nome||
             !nivel_acesso
         ) {
-            return res.status(422).send({mensagem: "Não foi possível cadastrar este Usuario. Informações incompletas. Tente novamente."});
+            return res.status(422).send({mensagem: "Não foi possível alterar este Usuario. Informações incompletas. Tente novamente."});
         }
 
         const create_user = knex('users')
@@ -174,11 +174,11 @@ module.exports = {
             })
             .then(create_user => {
                 if(!create_user || create_user.length == 0) 
-                    return res.status(400).send({mensagem: "Não foi possível cadastrar este create_user. Tente novamente."});
+                    return res.status(400).send({mensagem: "Não foi possível alterar este usuario. Tente novamente."});
     
                 const response = {
-                    mensagem: 'Produto Aletado com Sucesso',
-                    produtoCriado: {
+                    mensagem: 'usuario Aletado com Sucesso',
+                    usuarioCriado: {
                             idUser: create_user,
                             nome:req.body.nome,
                             nivel_acesso: req.body.nivel_acesso,
@@ -193,7 +193,7 @@ module.exports = {
                 return res.status(201).send(response);
             })
             .catch(err => {
-                return res.status(500).send({mensagem: "Erro no servidor ao cadastrar o Usuario, informe o administrador do sistema. " + err})
+                return res.status(500).send({mensagem: "Erro no servidor ao alterar o Usuario, informe o administrador do sistema. " + err})
             })
         
             
@@ -208,21 +208,21 @@ module.exports = {
             knex('users')
             .where('id', idUser)
             .del()
-            .then(pedido => {
-                if(!pedido || pedido.length == 0) 
-                    return res.status(404).send({mensagem: "Não foi encontrado nenhum pedido."});
+            .then(users => {
+                if(!users || users.length == 0) 
+                    return res.status(404).send({mensagem: "Não foi encontrado nenhum usuario."});
                 const response = {
                     mensagem: "Excluido com sucesso",
                     request: {
                         tipo: 'GET',
-                        descricao: 'Retorna os detalhes de um pedido específico',
+                        descricao: 'Retorna os detalhes de um usuario específico',
                         url: process.env.URL_API + 'usuarios/' + idUser
                     }
                 }
                 return res.status(200).send(response);
             })
             .catch(err => {
-                return res.status(500).send({mensagem: "Erro no servidor ao editar o pedido, informe o administrador do sistema. " + err})
+                return res.status(500).send({mensagem: "Erro no servidor ao editar o usuario, informe o administrador do sistema. " + err})
             })
     },
     // -------------------------------------------------

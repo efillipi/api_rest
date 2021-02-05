@@ -90,7 +90,7 @@ module.exports = {
                         data : data,
                         quantidade : item.quantidade,
                         valor_total_individual: item.valor * item.quantidade,
-                        observacao : observacao
+                        observacao : item.observacao_pedido
                     }
                 }));
                     
@@ -109,6 +109,7 @@ module.exports = {
                                 produto_id: item.produto_id,
                                 quantidade : item.quantidade,
                                 valor_total_individual: item.valor * item.quantidade,
+                                observacao : item.observacao_pedido,
                             }
                         }))
                     }
@@ -139,14 +140,23 @@ module.exports = {
                     'produtos.*',
                     'pedido_produtos.quantidade',
                     'pedido_produtos.valor_total_individual',
+                    'pedido_produtos.observacao',
                 )
                 .then(pedido_produtos => {
                     if(pedido_produtos.length == 0) 
                         return res.status(404).send({mensagem: "Não foi encontrado nenhum pedido."});
                     const response = {
-                        pedido,
-                        quantidadeProdutos: pedido_produtos.length,
-                        produtos : pedido_produtos,               
+                        pedido:{
+                            id: pedido[0].id,
+                            data: pedido[0].data,
+                            valor_total: pedido[0].valor_total,
+                            observacao: pedido[0].observacao,
+                            users_id: pedido[0].users_id,
+                            created_at: pedido[0].created_at,
+                            updated_at: pedido[0].updated_at,
+                            quantidadeProdutos: pedido_produtos.length,
+                            produtos : pedido_produtos,       
+                        },      
                     }
                     return res.status(200).send(response);
                 })
@@ -233,6 +243,7 @@ module.exports = {
                                 return {
                                     produto_id: item.produto_id,
                                     quantidade : item.quantidade,
+                                    observacao : item.observacao,
                                     valor_total_individual: item.valor * item.quantidade,
                                 }
                             }))

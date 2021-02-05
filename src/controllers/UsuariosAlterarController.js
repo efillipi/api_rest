@@ -62,7 +62,7 @@ module.exports = {
                 })
         })
         .catch(err => {
-            return res.status(500).send({mensagem: "Erro no servidor ao efetuar o login, informe o administrador do sistema. " + err})
+            return res.status(500).send({mensagem: "Não foi possível Alterar a senha do usuario, informe o administrador do sistema. " + err})
         })
     },
     // -----------------------------
