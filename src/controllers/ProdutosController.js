@@ -15,13 +15,13 @@ module.exports = {
                 
                     const response = {
                         quantidade: produtos.length,
-                        produtos: produtos.map(prod => {
+                        produtos: produtos.map(produto => {
                             return {
-                                prod,
+                                produto,
                                 request: {
                                     tipo: 'GET',
                                     descricao: 'Retorna os detalhes de um produto específico',
-                                    url: process.env.URL_API + 'produtos/' + prod.id
+                                    url: process.env.URL_API + 'produtos/' + produto.id
                                 }
                             }
                         })
