@@ -12,21 +12,21 @@ module.exports = {
             .then(produtos => {
                 if(produtos.length == 0) 
                     return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
-                
-                    const response = {
-                        quantidade: produtos.length,
-                        produtos: produtos.map(produto => {
-                            return {
-                                produto,
-                                request: {
-                                    tipo: 'GET',
-                                    descricao: 'Retorna os detalhes de um produto específico',
-                                    url: process.env.URL_API + 'produtos/' + produto.id
-                                }
+            
+                const response = {
+                    quantidade: produtos.length,
+                    produtos: produtos.map(produto => {
+                        return {
+                            produto,
+                            request: {
+                                tipo: 'GET',
+                                descricao: 'Retorna os detalhes de um produto específico',
+                                url: process.env.URL_API + 'produtos/' + produto.id
                             }
-                        })
-                    }
-                return res.status(200).send(response);
+                        }
+                    })
+                }
+            return res.status(200).send(response);
             })
             .catch(err => {
                 return res.status(500).send({mensagem: "Erro no servidor ao consultar os produtos, informe o administrador do sistema." + err})
