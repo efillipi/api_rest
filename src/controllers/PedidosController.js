@@ -100,20 +100,21 @@ module.exports = {
                 return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
                 
             const response = {
+                mensagem: "Pedido Alterado com exito.",
                 pedido_id: pedido,
-                data : data,
-                observacao : observacao,
+                data,
+                valor_total,
+                observacao,
                 produtos: 
                 produtos.map((item => {
-                            return {
-                                produto_id: item.produto_id,
-                                quantidade : item.quantidade,
-                                valor_total_individual: item.valor * item.quantidade,
-                                observacao : item.observacao_pedido,
-                            }
-                        }))
+                    return {
+                        produto_id: item.produto_id,
+                        quantidade : item.quantidade,
+                        observacao : item.observacao,
+                        valor_total_individual: item.valor * item.quantidade,
                     }
-            
+                }))
+            }
             return res.status(200).send(response);
             })   
         }) 
@@ -216,40 +217,38 @@ module.exports = {
                 .then(pedido_produtos_del => {
                     if(!pedido_produtos_del || pedido_produtos_del.length == 0) 
                         return res.status(404).send({mensagem: "Não foi encontrado nenhum pedido."});
-                const pedido_produtos = produtos
-                .map((item => {
-                    return {
-                        pedido_id: idPedido,
-                        produto_id: item.produto_id,
-                        data : data,
-                        quantidade : item.quantidade,
-                        valor_total_individual: item.valor * item.quantidade,
-                        observacao : observacao
-                    }
-                }));
-                const pedido_produto = knex('pedido_produtos').insert(pedido_produtos)
-                .then(pedido_produto => {
-                if(pedido_produto.length == 0) 
-                    return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
-                    
-                const response = {
-                    mensagem: "Pedido Alterado com exito.",
-                    pedido,
-                    data,
-                    valor_total,
-                    observacao,
-                    produtos: 
-                    produtos.map((item => {
-                                return {
-                                    produto_id: item.produto_id,
-                                    quantidade : item.quantidade,
-                                    observacao : item.observacao,
-                                    valor_total_individual: item.valor * item.quantidade,
-                                }
-                            }))
+                    const pedido_produtos = produtos.map((item => {
+                        return {
+                            pedido_id: idPedido,
+                            produto_id: item.produto_id,
+                            data : data,
+                            quantidade : item.quantidade,
+                            valor_total_individual: item.valor * item.quantidade,
+                            observacao : observacao
                         }
-                return res.status(200).send(response);
-                }) 
+                    }));
+                    const pedido_produto = knex('pedido_produtos').insert(pedido_produtos)
+                    .then(pedido_produto => {
+                    if(pedido_produto.length == 0) 
+                        return res.status(404).send({mensagem: "Não foi encontrado nenhum produto."});
+                    const response = {
+                        mensagem: "Pedido Alterado com exito.",
+                        pedido,
+                        data,
+                        valor_total,
+                        observacao,
+                        produtos: 
+                        produtos.map((item => {
+                            return {
+                                produto_id: item.produto_id,
+                                quantidade : item.quantidade,
+                                observacao : item.observacao,
+                                valor_total_individual: item.valor * item.quantidade,
+                            }
+                        }))
+                    }
+                    return res.status(200).send(response);
+                    }) 
                 })
             })
             .catch(err => {
