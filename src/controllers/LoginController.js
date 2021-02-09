@@ -38,6 +38,11 @@ module.exports = {
                             });
                         return res.status(200).send({
                             message: 'Autenticado com sucesso',
+                            user:{
+                                userId: login[0].id,
+                                email: login[0].email,
+                                nome: login[0].nome
+                            },
                             token: token
                         });
                     }

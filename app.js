@@ -7,25 +7,11 @@ const cors = require('cors')
 
 app.use(morgan('dev'));
 app.use(`/uploads`, express.static('uploads'));
-// app.use(bodyParser.urlencoded({extended : false})); // apenas dados simples
 app.use(express.json()); // somente json
 
 app.use(cors('*'));
 app.use(routes); // rotas criadas
 
-// app.use((req, res, next) => {
-//     res.header('Access-Control-Allow-Origin', '*');
-//     res.header(
-//         'Access-Control-Allow-Header',
-//         'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-//     );
-    
-//     if (req.method === 'OPTIONS') {
-//         res.header('Access-Control-Allow-Methods', 'PUT  , POST, PATCH, DELETE, GET');
-//         return res.status(200).send({});
-//     }
-//     next();
-// });
 //tratamento de erro caso a rota não exista
 app.use((req,res,next) =>{
     const erro = new Error('Não Encontrado');

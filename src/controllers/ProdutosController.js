@@ -33,7 +33,7 @@ module.exports = {
     // -----------------------------
     async create(req, res, next) {
 
-        console.log(req.body)
+        
         const created_at = moment().format();
         const updated_at = moment().format();
         const {
