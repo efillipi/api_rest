@@ -4,7 +4,7 @@ const router = express.Router();
 const multer = require('../utils/multer');
 const login = require('../middleware/login');
 const ProdutosController = require('../controllers/ProdutosController')
-const path = require('path');
+
 
 
 router.get('/', ProdutosController.getall)

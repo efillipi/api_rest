@@ -3,21 +3,22 @@ const express = require('express');
 const router = express.Router();
 const UsuarioController = require('../controllers/UsuarioController')
 const UsuariosAlterarController = require('../controllers/UsuariosAlterarController')
+const login = require('../middleware/login');
 
 // -------------------------------------------------
-router.get('/',UsuarioController.getall)
+router.get('/',login.required,UsuarioController.getall)
 // -------------------------------------------------
 router.post('/',UsuarioController.create)
 // -------------------------------------------------
 router.get('/:idUser',UsuarioController.byid)
 // -------------------------------------------------
-router.put('/:idUser', UsuarioController.put)
+router.put('/:idUser', login.required,UsuarioController.put)
 // -------------------------------------------------
-router.delete('/:idUser', UsuarioController.delete)
+router.delete('/:idUser', login.required,UsuarioController.delete)
 // -------------------------------------------------
-router.put('/senha/:idUser',UsuariosAlterarController.alterarSenha)
+router.put('/senha/:idUser',login.required,UsuariosAlterarController.alterarSenha)
 // -------------------------------------------------
-router.put('/email/:idUser',UsuariosAlterarController.alterarEmail)
+router.put('/email/:idUser',login.required,UsuariosAlterarController.alterarEmail)
 // -------------------------------------------------
 
 module.exports = router;

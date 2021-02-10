@@ -148,7 +148,6 @@ module.exports = {
     },
 
     async put(req, res, next) {
-
         const { idUser } = req.params;
         const updated_at = moment().format();
 
