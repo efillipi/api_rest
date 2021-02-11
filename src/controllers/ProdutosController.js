@@ -15,7 +15,17 @@ module.exports = {
                     quantidade: produtos.length,
                     produtos: produtos.map(produto => {
                         return {
-                            produto,
+                            id: produto.id,
+                            nome: produto.nome,
+                            valor: produto.valor,
+                            codigo: produto.codigo,
+                            categoria_id: produto.categoria_id,
+                            descricao_curta: produto.descricao,
+                            imagem: produto.descricao,
+                            descricao: produto.descricao,
+                            ativo: produto.ativo,
+                            created_at: produto.created_at,
+                            updated_at: produto.updated_at,
                             request: {
                                 tipo: 'GET',
                                 descricao: 'Retorna os detalhes de um produto específico',

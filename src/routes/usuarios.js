@@ -6,19 +6,19 @@ const UsuariosAlterarController = require('../controllers/UsuariosAlterarControl
 const login = require('../middleware/login');
 
 // -------------------------------------------------
-router.get('/',login.required,UsuarioController.getall)
+router.get('/',UsuarioController.getall)
 // -------------------------------------------------
 router.post('/',UsuarioController.create)
 // -------------------------------------------------
 router.get('/:idUser',UsuarioController.byid)
 // -------------------------------------------------
-router.put('/:idUser', login.required,UsuarioController.put)
+router.put('/:idUser', UsuarioController.put)
 // -------------------------------------------------
-router.delete('/:idUser', login.required,UsuarioController.delete)
+router.delete('/:idUser', UsuarioController.delete)
 // -------------------------------------------------
-router.put('/senha/:idUser',login.required,UsuariosAlterarController.alterarSenha)
+router.put('/senha/:idUser',UsuariosAlterarController.alterarSenha)
 // -------------------------------------------------
-router.put('/email/:idUser',login.required,UsuariosAlterarController.alterarEmail)
+router.put('/email/:idUser',UsuariosAlterarController.alterarEmail)
 // -------------------------------------------------
 
 module.exports = router;
