@@ -2,13 +2,11 @@ const express = require('express');
 const routes = require('./src/routes/index');
 const app = express();
 const morgan = require('morgan')
-
 const cors = require('cors')
 
 app.use(morgan('dev'));
 app.use(`/uploads`, express.static('uploads'));
 app.use(express.json()); // somente json
-
 app.use(cors('*'));
 app.use(routes); // rotas criadas
 
